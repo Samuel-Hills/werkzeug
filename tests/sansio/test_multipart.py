@@ -180,3 +180,37 @@ Content-Type: text/plain; charset="UTF-8"
     for event in events:
         result += encoder.send_event(event)
     assert data == result
+
+
+def test_decoder_does_not_include_partial_boundary_line_break() -> None:
+    boundary = b"WZBOUND"
+    body = (
+        b'--WZBOUND\r\nContent-Disposition: form-data; name="a"\r\n\r\n'
+        b'\r\n--WZBOUND--\r\n'
+    )
+
+    decoder = MultipartDecoder(boundary)
+    data = bytearray()
+    for byte in body:
+        decoder.receive_data(bytes([byte]))
+        while True:
+            event = decoder.next_event()
+            if isinstance(event, NeedData):
+                break
+            if isinstance(event, Data):
+                data.extend(event.data)
+            if isinstance(event, Epilogue):
+                assert bytes(data) == b""
+                return
+
+    decoder.receive_data(None)
+    while True:
+        event = decoder.next_event()
+        if isinstance(event, Data):
+            data.extend(event.data)
+        elif isinstance(event, Epilogue):
+            break
+        else:
+            assert isinstance(event, NeedData)
+
+    assert bytes(data) == b""

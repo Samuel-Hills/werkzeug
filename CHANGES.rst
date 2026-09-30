@@ -164,6 +164,8 @@ Version 3.2.0
     are closed to prevent a ``ResourceWarning``. :pr:`3101`
 -   ``SpooledTemporaryFile`` is always used for multipart file parsing.
     :pr:`3101`
+-   Multipart parsing no longer includes a stray carriage return when a
+    closing boundary is split across input chunks. :issue:`3285`
 -   Raise a ``DuplicateRuleError`` when attempting to add a rule to a map with
     an equal rule. :issue:`3037`
 -   Add ``Request.sec_fetch_site``, ``sec_fetch_mode``, ``sec_fetch_user``, and

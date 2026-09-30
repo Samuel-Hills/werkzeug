@@ -265,6 +265,10 @@ class MultipartDecoder:
                 data_end = del_index = (
                     self._last_partial_boundary_index(data[data_start:]) + data_start
                 )
+                # Keep a CRLF sequence intact when it is split across chunks.
+                if data_end > data_start and data[data_end - 1] == 0x0D:
+                    data_end -= 1
+                    del_index -= 1
             more_data = match is None
         return bytes(data[data_start:data_end]), del_index, more_data
 
