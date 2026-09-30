@@ -186,7 +186,7 @@ def test_decoder_does_not_include_partial_boundary_line_break() -> None:
     boundary = b"WZBOUND"
     body = (
         b'--WZBOUND\r\nContent-Disposition: form-data; name="a"\r\n\r\n'
-        b'\r\n--WZBOUND--\r\n'
+        b"\r\n--WZBOUND--\r\n"
     )
 
     decoder = MultipartDecoder(boundary)
